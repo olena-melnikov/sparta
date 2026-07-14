@@ -1,0 +1,40 @@
+# Input file for drag_opt_fd / drag_opt_ad  (--input drag_opt.in).
+# "key = value" pairs; '#' starts a comment (inline comments ok too).
+# Any value here can be overridden by the matching --flag on the command
+# line. Run from a directory containing air.species and air.vss, e.g.:
+#   cd bezier
+#   ../build/drag_opt_fd --input ../drag_opt.in --experiment baseline
+
+alpha = 1.0, 0.3, 3.0, 0.3      # start point (alpha1, alpha2, alpha3, alpha4)
+                                 #   P1 = (alpha1, alpha2), P2 = (alpha3, alpha4)
+seeds = 12345, 67890, 13579      # CRN seed set (sample-average approximation)
+
+# --- box constraints on the control points --------------------------------
+#   a <= alpha1, alpha3 <= b   (x-coordinates of P1, P2)
+#   c <= alpha2, alpha4 <= d   (y-coordinates of P1, P2)
+x_lo = 0.2      # a
+x_hi = 3.8      # b   (keep < chord; chord defaults to 4.0)
+y_lo = 0.05     # c
+y_hi = 3.0      # d
+
+# --- optimizer ------------------------------------------------------------
+# drag is a noisy Monte-Carlo estimate, so tight tolerances are unreachable
+# (IPOPT would grind forever with vanishing steps). These defaults are tuned
+# for the stochastic objective; acceptable_* is the fallback stopping rule.
+max_iter        = 40
+tol             = 1e-4
+acceptable_tol  = 1e-3           # accept a noise-level optimum ...
+acceptable_iter = 5              # ... once it holds for this many iters
+experiment      = baseline       # names the output folder: <date>_<experiment>
+# h = 0.05                        # FD step (drag_opt_fd only)
+#
+# Tip: use more seeds (above) to cut Monte-Carlo noise, and larger navg for a
+# cleaner objective, if you want to tighten tol.
+
+# --- optional DragCase overrides (defaults from drag_objective.h) ----------
+# nseg    = 25
+# chord   = 4.0
+# nsettle = 500
+# navg    = 500
+# vstream = 100
+# verbose = 0

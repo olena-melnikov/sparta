@@ -3,8 +3,10 @@
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/build/CMakeFiles/drag_run.dir
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/build/CMakeFiles/opt_run.dir
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/build/CMakeFiles/bezier_gen.dir
+/Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/build/CMakeFiles/drag_opt_fd.dir
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/build/CMakeFiles/sparta_build_serial_ad.dir
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/build/CMakeFiles/drag_run_ad.dir
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/build/CMakeFiles/test_ad_geom.dir
+/Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/build/CMakeFiles/drag_opt_ad.dir
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/build/CMakeFiles/edit_cache.dir
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/build/CMakeFiles/rebuild_cache.dir

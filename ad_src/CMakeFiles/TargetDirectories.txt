@@ -3,5 +3,6 @@
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/CMakeFiles/drag_run.dir
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/CMakeFiles/opt_run.dir
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/CMakeFiles/bezier_gen.dir
+/Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/CMakeFiles/drag_opt_fd.dir
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/CMakeFiles/edit_cache.dir
 /Users/olenamelnikov/Desktop/sparta_AD/sparta/ad_src/CMakeFiles/rebuild_cache.dir

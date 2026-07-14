@@ -1,0 +1,10 @@
+experiment    : tight_box
+gradient      : AD
+ipopt status  : Solve_Succeeded
+iterations    : 7
+alpha start   : 1.00000000e+00 3.00000000e-01 3.00000000e+00 3.00000000e-01
+alpha final   : 3.49997168e+00 1.00005256e-01 3.49999245e+00 1.00005021e-01
+drag start    : 6.58975451e-22
+drag final    : 1.07512652e-22
+drag reduction: 5.51462798e-22
+body area      : -3.59698795e-01

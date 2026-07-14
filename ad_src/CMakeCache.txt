@@ -208,6 +208,12 @@ DRAG_ENABLE_AD:BOOL=OFF
 //Print build instructions and exit, without configuring a compiler
 HELP:BOOL=OFF
 
+//Path to a file.
+IPOPT_INCLUDE_DIR:PATH=/opt/homebrew/include/coin-or
+
+//Path to a library.
+IPOPT_LIB:FILEPATH=/opt/homebrew/lib/libipopt.dylib
+
 //Path to a program.
 MAKE_EXECUTABLE:FILEPATH=/usr/bin/make
 

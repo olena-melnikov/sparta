@@ -1,0 +1,10 @@
+experiment    : tight_box
+gradient      : finite-difference
+ipopt status  : Maximum_Iterations_Exceeded
+iterations    : 40
+alpha start   : 1.00000000e+00 3.00000000e-01 3.00000000e+00 3.00000000e-01
+alpha final   : 3.50000003e+00 9.99999900e-02 1.22232248e+00 9.99999900e-02
+drag start    : 6.58975451e-22
+drag final    : 7.25988092e-23
+drag reduction: 5.86376642e-22
+body area      : -2.91895178e-01
