@@ -292,16 +292,23 @@ void *sparta_extract_variable(void *ptr, char *name)
   int ivar = sparta->input->variable->find(name);
   if (ivar < 0) return NULL;
 
+  // AD note: this C API returns plain doubles; derivatives are
+  // deliberately dropped here (passive edge). Use sparta_extract_compute
+  // and read the sfloat directly if gradients are needed.
+
   if (sparta->input->variable->equal_style(ivar)) {
     double *dptr = (double *) malloc(sizeof(double));
-    *dptr = sparta->input->variable->compute_equal(ivar);
+    *dptr = spval(sparta->input->variable->compute_equal(ivar));
     return (void *) dptr;
   }
 
   if (sparta->input->variable->particle_style(ivar)) {
     int nlocal = sparta->particle->nlocal;
+    sfloat *svec = (sfloat *) malloc(nlocal*sizeof(sfloat));
+    sparta->input->variable->compute_particle(ivar,svec,1,0);
     double *vector = (double *) malloc(nlocal*sizeof(double));
-    sparta->input->variable->compute_particle(ivar,vector,1,0);
+    for (int i = 0; i < nlocal; i++) vector[i] = spval(svec[i]);
+    free(svec);
     return (void *) vector;
   }
 

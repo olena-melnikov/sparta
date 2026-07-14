@@ -1,0 +1,2 @@
+ar qc libpkg_mpi_stubs.a CMakeFiles/pkg_mpi_stubs.dir/mpi.c.o
+/usr/bin/ranlib libpkg_mpi_stubs.a

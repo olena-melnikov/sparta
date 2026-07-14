@@ -1,3 +1,4 @@
+/* AD-CONVERTED: double->sfloat by ad_convert.py (see sfloat.h) */
 /**
  * @file    LookUpTable.h
  * @author  Thomas Lewiner <thomas.lewiner@polytechnique.org>

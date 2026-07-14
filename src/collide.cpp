@@ -1,3 +1,4 @@
+/* AD-CONVERTED: double->sfloat by ad_convert.py (see sfloat.h) */
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
    http://sparta.github.io
@@ -54,7 +55,7 @@ Collide::Collide(SPARTA *sparta, int, char **arg) : Pointers(sparta)
   strcpy(mixID,arg[1]);
 
   random = new RanKnuth(update->ranmaster->uniform());
-  double seed = update->ranmaster->uniform();
+  double seed = update->ranmaster->uniform();  // AD: RNG passive
   random->reset(seed,comm->me,100);
 
   ngroups = 0;
@@ -426,7 +427,7 @@ template < int NEARCP, int GASTALLY > void Collide::collisions_one()
 {
   int i,j,k,m,n,ip,np;
   int nattempt,reactflag;
-  double attempt,volume;
+  sfloat attempt,volume;
   Particle::OnePart iorig,jorig;
   Particle::OnePart *ipart,*jpart,*kpart;
 
@@ -581,7 +582,7 @@ template < int NEARCP, int GASTALLY > void Collide::collisions_group()
   int nattempt,reactflag;
   int *ni,*nj,*ilist,*jlist;
   int *nn_igroup,*nn_jgroup;
-  double attempt,volume;
+  sfloat attempt,volume;
   Particle::OnePart iorig,jorig;
   Particle::OnePart *ipart,*jpart,*kpart;
 
@@ -647,7 +648,7 @@ template < int NEARCP, int GASTALLY > void Collide::collisions_group()
     }
 
     // attempt = exact collision attempt count for a pair of groups
-    // double loop over N^2 / 2 pairs of groups
+    // sfloat loop over N^2 / 2 pairs of groups
     // nattempt = rounded attempt with RN
     // NOTE: not using RN for rounding of nattempt
     // gpair = list of group pairs when nattempt > 0
@@ -864,14 +865,14 @@ template < int GASTALLY > void Collide::collisions_one_ambipolar()
 {
   int i,j,k,m,n,ip,np,nelectron,nptotal,ispecies,jspecies,tmp;
   int nattempt,reactflag;
-  double attempt,volume;
+  sfloat attempt,volume;
   Particle::OnePart iorig,jorig;
   Particle::OnePart *ipart,*jpart,*kpart,*p,*ep;
 
   // ambipolar vectors
 
   int *ionambi = particle->eivec[particle->ewhich[index_ionambi]];
-  double **velambi = particle->edarray[particle->ewhich[index_velambi]];
+  sfloat **velambi = particle->edarray[particle->ewhich[index_velambi]];
 
   // loop over cells I own
 
@@ -921,7 +922,7 @@ template < int GASTALLY > void Collide::collisions_one_ambipolar()
         p = &particles[plist[i]];
         ep = &elist[nelectron];
         memcpy(ep,p,nbytes);
-        memcpy(ep->v,velambi[plist[i]],3*sizeof(double));
+        memcpy(ep->v,velambi[plist[i]],3*sizeof(sfloat));
         ep->ispecies = ambispecies;
         nelectron++;
       }
@@ -1149,7 +1150,7 @@ template < int GASTALLY > void Collide::collisions_one_ambipolar()
       if (ionambi[i]) {
         if (melectron < nelectron) {
           ep = &elist[melectron];
-          memcpy(velambi[i],ep->v,3*sizeof(double));
+          memcpy(velambi[i],ep->v,3*sizeof(sfloat));
         }
         melectron++;
       }
@@ -1170,14 +1171,14 @@ template < int GASTALLY > void Collide::collisions_group_ambipolar()
   int pindex,ipair,igroup,jgroup,newgroup,ispecies,jspecies,tmp;
   int nattempt,reactflag,nelectron;
   int *ni,*nj,*ilist,*jlist,*tmpvec;
-  double attempt,volume;
+  sfloat attempt,volume;
   Particle::OnePart iorig,jorig;
   Particle::OnePart *ipart,*jpart,*kpart,*p,*ep;
 
   // ambipolar vectors
 
   int *ionambi = particle->eivec[particle->ewhich[index_ionambi]];
-  double **velambi = particle->edarray[particle->ewhich[index_velambi]];
+  sfloat **velambi = particle->edarray[particle->ewhich[index_velambi]];
 
   // loop over cells I own
 
@@ -1247,7 +1248,7 @@ template < int GASTALLY > void Collide::collisions_group_ambipolar()
         p = &particles[ip];
         ep = &elist[nelectron];
         memcpy(ep,p,nbytes);
-        memcpy(ep->v,velambi[ip],3*sizeof(double));
+        memcpy(ep->v,velambi[ip],3*sizeof(sfloat));
         ep->ispecies = ambispecies;
         nelectron++;
 
@@ -1265,7 +1266,7 @@ template < int GASTALLY > void Collide::collisions_group_ambipolar()
     }
 
     // attempt = exact collision attempt count for a pair of groups
-    // double loop over N^2 / 2 pairs of groups
+    // sfloat loop over N^2 / 2 pairs of groups
     // temporarily include nelectrons in count for egroup
     // nattempt = rounded attempt with RN
     // NOTE: not using RN for rounding of nattempt
@@ -1586,7 +1587,7 @@ template < int GASTALLY > void Collide::collisions_group_ambipolar()
       if (ionambi[i]) {
         if (melectron < nelectron) {
           ep = &elist[melectron];
-          memcpy(velambi[i],ep->v,3*sizeof(double));
+          memcpy(velambi[i],ep->v,3*sizeof(sfloat));
         }
         melectron++;
       }
@@ -1763,7 +1764,7 @@ void Collide::reset_vremax()
 
 int Collide::pack_grid_one(int icell, char *buf, int memflag)
 {
-  int nbytes = ngroups*ngroups*sizeof(double);
+  int nbytes = ngroups*ngroups*sizeof(sfloat);
 
   Grid::ChildCell *cells = grid->cells;
 
@@ -1809,7 +1810,7 @@ int Collide::pack_grid_one(int icell, char *buf, int memflag)
 
 int Collide::unpack_grid_one(int icell, char *buf)
 {
-  int nbytes = ngroups*ngroups*sizeof(double);
+  int nbytes = ngroups*ngroups*sizeof(sfloat);
 
   Grid::ChildCell *cells = grid->cells;
   Grid::SplitInfo *sinfo = grid->sinfo;
@@ -1850,7 +1851,7 @@ int Collide::unpack_grid_one(int icell, char *buf)
 
 void Collide::copy_grid_one(int icell, int jcell)
 {
-  int nbytes = ngroups*ngroups*sizeof(double);
+  int nbytes = ngroups*ngroups*sizeof(sfloat);
 
   memcpy(&vremax[jcell][0][0],&vremax[icell][0][0],nbytes);
   if (remainflag)
@@ -1940,8 +1941,8 @@ void Collide::grow_percell(int n)
 int Collide::find_nn(int i, int np)
 {
   int jneigh;
-  double dx,dy,dz,rsq;
-  double *xj;
+  sfloat dx,dy,dz,rsq;
+  sfloat *xj;
 
   // if np = 2, just return J = non-I particle
   // np is never < 2
@@ -1950,15 +1951,15 @@ int Collide::find_nn(int i, int np)
 
   Particle::OnePart *ipart,*jpart;
   Particle::OnePart *particles = particle->particles;
-  double dt = update->dt;
+  sfloat dt = update->dt;
 
   // thresh = distance particle I moves in this timestep
 
   ipart = &particles[plist[i]];
-  double *vi = ipart->v;
-  double *xi = ipart->x;
-  double threshsq =  dt*dt * (vi[0]*vi[0]+vi[1]*vi[1]+vi[2]*vi[2]);
-  double minrsq = BIG;
+  sfloat *vi = ipart->v;
+  sfloat *xi = ipart->x;
+  sfloat threshsq =  dt*dt * (vi[0]*vi[0]+vi[1]*vi[1]+vi[2]*vi[2]);
+  sfloat minrsq = BIG;
 
   // nlimit = max # of J candidates to consider
 
@@ -2028,8 +2029,8 @@ int Collide::find_nn_group(int i, int *ilist, int np, int *jlist, int *plist,
                            int *nn_igroup, int *nn_jgroup)
 {
   int jneigh;
-  double dx,dy,dz,rsq;
-  double *xj;
+  sfloat dx,dy,dz,rsq;
+  sfloat *xj;
 
   // if ilist = jlist and np = 2, just return J = non-I particle
   // np is never < 2 for ilist = jlist
@@ -2039,15 +2040,15 @@ int Collide::find_nn_group(int i, int *ilist, int np, int *jlist, int *plist,
 
   Particle::OnePart *ipart,*jpart;
   Particle::OnePart *particles = particle->particles;
-  double dt = update->dt;
+  sfloat dt = update->dt;
 
   // thresh = distance particle I moves in this timestep
 
   ipart = &particles[plist[ilist[i]]];
-  double *vi = ipart->v;
-  double *xi = ipart->x;
-  double threshsq =  dt*dt * (vi[0]*vi[0]+vi[1]*vi[1]+vi[2]*vi[2]);
-  double minrsq = BIG;
+  sfloat *vi = ipart->v;
+  sfloat *xi = ipart->x;
+  sfloat threshsq =  dt*dt * (vi[0]*vi[0]+vi[1]*vi[1]+vi[2]*vi[2]);
+  sfloat minrsq = BIG;
 
   // nlimit = max # of J candidates to consider
 

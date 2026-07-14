@@ -6,7 +6,7 @@ set(SPARTA_MACHINE
     CACHE STRING
           "Descriptive string to describe \"spa_\" executable configuration")
 set(SPARTA_CXX_COMPILE_FLAGS
-    -fPIC -DSPARTA_UNORDERED_MAP
+    -fPIC -DSPARTA_UNORDERED_MAP -DSPARTA_FFMPEG
     CACHE STRING "Compiler flags use when building .o files for spa_*")
 # ################### END SPARTA OPTIONS ####################
 

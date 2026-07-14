@@ -1,0 +1,14 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/olenamelnikov/Desktop/sparta_AD/sparta/cmake/presets/cmake_install.cmake",
+		"/Users/olenamelnikov/Desktop/sparta_AD/sparta/cmake/presets/src/cmake_install.cmake",
+		"/Users/olenamelnikov/Desktop/sparta_AD/sparta/cmake/presets/src/KOKKOS/cmake_install.cmake",
+		"/Users/olenamelnikov/Desktop/sparta_AD/sparta/cmake/presets/src/FFT/cmake_install.cmake",
+		"/Users/olenamelnikov/Desktop/sparta_AD/sparta/cmake/presets/src/STUBS/cmake_install.cmake",
+		"/Users/olenamelnikov/Desktop/sparta_AD/sparta/cmake/presets/src/PYTHON/cmake_install.cmake",
+		"/Users/olenamelnikov/Desktop/sparta_AD/sparta/cmake/presets/paraview/cmake_install.cmake",
+		"/Users/olenamelnikov/Desktop/sparta_AD/sparta/cmake/presets/examples/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -1,3 +1,4 @@
+/* AD-CONVERTED: double->sfloat by ad_convert.py (see sfloat.h) */
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
    http://sparta.github.io
@@ -22,7 +23,7 @@
 //        This file contains a library of functions and classes which can
 //        efficiently perform eigendecomposition for an extremely broad
 //        range of matrix types: both real and complex, dense and sparse.
-//        Matrices need not be of type "double **", for example.
+//        Matrices need not be of type "sfloat **", for example.
 //        In principle, almost any type of C++ container can be used.
 //        Some general C++11 compatible functions for allocating matrices and
 //        calculating norms of real and complex vectors are also provided.
@@ -40,6 +41,10 @@
 #include <functional>
 
 namespace MathEigen {
+
+using std::sqrt;
+using std::abs;   // sfloat overloads found via ADL
+
 
   // --- Memory allocation for matrices ---
 
@@ -252,7 +257,7 @@ inline T inner_prod(const std::vector<T>& v1, const std::vector<T>& v2) {
 
 template <typename T>
 inline real_t<T> l2_norm(const std::vector<T>& vec) {
-  return std::sqrt(std::real(inner_prod(vec, vec)));
+  return sqrt(std::real(inner_prod(vec, vec)));
   // The norm of any complex vector <v|v> is real by definition.
 }
 
@@ -272,7 +277,7 @@ template <typename T>
 inline real_t<T> l1_norm(const std::vector<T>& vec) {
   real_t<T> norm = real_t<T>(); // Zero initialization
   for (const T& element : vec)
-    norm += std::abs(element);
+    norm += abs(element);
   return norm;
 }
 
@@ -406,13 +411,13 @@ CalcRot(Scalar const *const *M,    //!< matrix
       kappa /= (2.0*M_ij);
       // t satisfies: t^2 + 2*t*kappa - 1 = 0
       // (choose the root which has the smaller absolute value)
-      t = 1.0 / (std::sqrt(1 + kappa*kappa) + std::abs(kappa));
+      t = 1.0 / (sqrt(1 + kappa*kappa) + abs(kappa));
       if (kappa < 0.0)
         t = -t;
     }
   }
-  //assert(std::abs(t) <= 1.0);
-  c = 1.0 / std::sqrt(1 + t*t);
+  //assert(abs(t) <= 1.0);
+  c = 1.0 / sqrt(1 + t*t);
   s = c*t;
 }
 
@@ -484,7 +489,7 @@ ApplyRot(Scalar **M,  // matrix
     M[i][w] = M[w][i]; //backup the previous value. store below diagonal (i>w)
     M[w][i] = c*M[w][i] - s*M[w][j]; //M[w][i], M[w][j] from previous iteration
     if (i == max_idx_row[w]) max_idx_row[w] = MaxEntryRow(M, w);
-    else if (std::abs(M[w][i])>std::abs(M[w][max_idx_row[w]])) max_idx_row[w]=i;
+    else if (abs(M[w][i])>abs(M[w][max_idx_row[w]])) max_idx_row[w]=i;
     //assert(max_idx_row[w] == MaxEntryRow(M, w));
   }
   for (int w=i+1; w < j; w++) {      // 0 <= i <  w  <  j < n
@@ -503,13 +508,13 @@ ApplyRot(Scalar **M,  // matrix
   for (int w=0; w < i; w++) {        // 0 <=  w  <  i <  j < n
     M[w][j] = s*M[i][w] + c*M[w][j]; //M[i][w], M[w][j] from previous iteration
     if (j == max_idx_row[w]) max_idx_row[w] = MaxEntryRow(M, w);
-    else if (std::abs(M[w][j])>std::abs(M[w][max_idx_row[w]])) max_idx_row[w]=j;
+    else if (abs(M[w][j])>abs(M[w][max_idx_row[w]])) max_idx_row[w]=j;
     //assert(max_idx_row[w] == MaxEntryRow(M, w));
   }
   for (int w=i+1; w < j; w++) {      // 0 <= i+1 <= w <  j < n
     M[w][j] = s*M[w][i] + c*M[w][j]; //M[w][i], M[w][j] from previous iteration
     if (j == max_idx_row[w]) max_idx_row[w] = MaxEntryRow(M, w);
-    else if (std::abs(M[w][j])>std::abs(M[w][max_idx_row[w]])) max_idx_row[w]=j;
+    else if (abs(M[w][j])>abs(M[w][max_idx_row[w]])) max_idx_row[w]=j;
     //assert(max_idx_row[w] == MaxEntryRow(M, w));
   }
   for (int w=j+1; w < n; w++) {      // 0 <=  i  <  j <  w < n
@@ -552,7 +557,7 @@ int Jacobi<Scalar, Vector, Matrix, ConstMatrix>::
 MaxEntryRow(Scalar const *const *M, int i) const {
   int j_max = i+1;
   for (int j = i+2; j < n; j++)
-    if (std::abs(M[i][j]) > std::abs(M[i][j_max]))
+    if (abs(M[i][j]) > abs(M[i][j_max]))
       j_max = j;
   return j_max;
 }
@@ -569,12 +574,12 @@ MaxEntry(Scalar const *const *M, int& i_max, int& j_max) const {
   // find the maximum entry in the matrix M in O(n) time
   i_max = 0;
   j_max = max_idx_row[i_max];
-  Scalar max_entry = std::abs(M[i_max][j_max]);
+  Scalar max_entry = abs(M[i_max][j_max]);
   int nm1 = n-1;
   for (int i=1; i < nm1; i++) {
     int j = max_idx_row[i];
-    if (std::abs(M[i][j]) > max_entry) {
-      max_entry = std::abs(M[i][j]);
+    if (abs(M[i][j]) > max_entry) {
+      max_entry = abs(M[i][j]);
       i_max = i;
       j_max = j;
     }
@@ -603,11 +608,11 @@ SortRows(Vector eval,        // vector containing the keys used for sorting
           i_max = j;
         break;
       case SORT_DECREASING_ABS_EVALS:
-        if (std::abs(eval[j]) > std::abs(eval[i_max]))
+        if (abs(eval[j]) > abs(eval[i_max]))
           i_max = j;
         break;
       case SORT_INCREASING_ABS_EVALS:
-        if (std::abs(eval[j]) < std::abs(eval[i_max]))
+        if (abs(eval[j]) < abs(eval[i_max]))
           i_max = j;
         break;
       default:

@@ -1,0 +1,1 @@
+/usr/bin/c++  -O -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/spa_mac.dir/main.cpp.o -o spa_mac  libsparta_mac.a STUBS/libpkg_mpi_stubs.a

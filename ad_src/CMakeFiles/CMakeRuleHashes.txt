@@ -1,0 +1,5 @@
+# Hashes of file build rules.
+a24069b71f577ce822de8af6ba3a4567 /Users/olenamelnikov/Desktop/sparta_AD/sparta/src/STUBS/libmpi_stubs.a
+3df125eb9392d8797bfaea67f7d430bd /Users/olenamelnikov/Desktop/sparta_AD/sparta/src/libsparta_serial.a
+f3164f751b1ddbcdfc8b2040d3d3fa13 CMakeFiles/sparta_build_mpi_stubs
+f3164f751b1ddbcdfc8b2040d3d3fa13 CMakeFiles/sparta_build_serial

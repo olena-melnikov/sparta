@@ -1,3 +1,4 @@
+/* AD-CONVERTED: double->sfloat by ad_convert.py (see sfloat.h) */
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
    http://sparta.github.io
@@ -160,7 +161,7 @@ void Particle::init()
 
   if (!wrandom) {
     wrandom = new RanKnuth(update->ranmaster->uniform());
-    double seed = update->ranmaster->uniform();
+    double seed = update->ranmaster->uniform();  // AD: RNG passive
     wrandom->reset(seed,me,100);
   }
 
@@ -503,7 +504,7 @@ void Particle::pre_weight()
 void Particle::post_weight()
 {
   int m,icell,nclone;
-  double ratio,fraction;
+  sfloat ratio,fraction;
 
   int nbytes = sizeof(OnePart);
   Grid::ChildInfo *cinfo = grid->cinfo;
@@ -624,7 +625,7 @@ void Particle::grow_next()
 ------------------------------------------------------------------------- */
 
 int Particle::add_particle(int id, int ispecies, int icell,
-                           double *x, double *v, double erot, double evib)
+                           sfloat *x, sfloat *v, sfloat erot, sfloat evib)
 {
   int reallocflag = 0;
   if (nlocal == maxlocal) {
@@ -1019,9 +1020,9 @@ int Particle::find_mixture(char *id)
    only a function of species index and species properties
 ------------------------------------------------------------------------- */
 
-double Particle::erot(int isp, double temp_thermal, RanKnuth *erandom)
+sfloat Particle::erot(int isp, sfloat temp_thermal, RanKnuth *erandom)
 {
-  double eng,a,erm,b;
+  sfloat eng,a,erm,b;
   int rotstyle = NONE;
   if (collide) rotstyle = collide->rotstyle;
 
@@ -1029,8 +1030,8 @@ double Particle::erot(int isp, double temp_thermal, RanKnuth *erandom)
   if (species[isp].rotdof < 2) return 0.0;
 
   if (rotstyle == DISCRETE && species[isp].rotdof == 2) {
-    int irot = -log(erandom->uniform()) * temp_thermal /
-      particle->species[isp].rottemp[0];
+    int irot = (int) spval(-log(erandom->uniform()) * temp_thermal /
+      particle->species[isp].rottemp[0]);   // AD: discrete level
     eng = irot * update->boltz * particle->species[isp].rottemp[0];
   } else if (rotstyle == SMOOTH && species[isp].rotdof == 2) {
     eng = -log(erandom->uniform()) * update->boltz * temp_thermal;
@@ -1055,9 +1056,9 @@ double Particle::erot(int isp, double temp_thermal, RanKnuth *erandom)
      -1 if not defined for this model
 ------------------------------------------------------------------------- */
 
-double Particle::evib(int isp, double temp_thermal, RanKnuth *erandom)
+sfloat Particle::evib(int isp, sfloat temp_thermal, RanKnuth *erandom)
 {
-  double eng,a,erm,b;
+  sfloat eng,a,erm,b;
 
   int vibstyle = NONE;
   if (collide) vibstyle = collide->vibstyle;
@@ -1069,8 +1070,8 @@ double Particle::evib(int isp, double temp_thermal, RanKnuth *erandom)
   eng = 0.0;
 
   if (vibstyle == DISCRETE && species[isp].vibdof == 2) {
-    int ivib = -log(erandom->uniform()) * temp_thermal /
-      particle->species[isp].vibtemp[0];
+    int ivib = (int) spval(-log(erandom->uniform()) * temp_thermal /
+      particle->species[isp].vibtemp[0]);   // AD: discrete level
     eng = ivib * update->boltz * particle->species[isp].vibtemp[0];
   } else if (vibstyle == SMOOTH || species[isp].vibdof >= 2) {
     if (species[isp].vibdof == 2)
@@ -1602,8 +1603,8 @@ bigint Particle::memory_usage()
   for (int i = 0; i < ncustom_iarray; i++)
     bytes += (bigint) maxlocal*eicol[i] * sizeof(int);
   for (int i = 0; i < ncustom_dvec; i++)
-    bytes += (bigint) maxlocal * sizeof(double);
+    bytes += (bigint) maxlocal * sizeof(sfloat);
   for (int i = 0; i < ncustom_darray; i++)
-    bytes += (bigint) maxlocal*edcol[i] * sizeof(double);
+    bytes += (bigint) maxlocal*edcol[i] * sizeof(sfloat);
   return bytes;
 }

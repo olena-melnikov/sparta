@@ -1,0 +1,17 @@
+# Input file for drag_run --input.
+# "key = value" pairs; '#' starts a comment. Any value here can still
+# be overridden by also passing the matching --flag on the command line.
+#
+# Run from a directory containing air.species and air.vss, e.g.:
+#   cd ../examples/bezier
+#   ../../tmp_src/build/drag_run --input ../../tmp_src/drag.in
+
+alpha   = 1.0, 0.3, 3.0, 0.3
+seeds   = 12345, 67890, 13579
+
+# optional DragCase overrides (defaults shown are from drag_objective.h)
+# nsettle = 500
+# navg    = 500
+# nseg    = 25
+# chord   = 4.0
+# verbose = 0

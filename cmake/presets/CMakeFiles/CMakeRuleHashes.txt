@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+c3d4e8f6cf4d7355177cbf22f144c4a0 src/CMakeFiles/sparta_mac_PRE_BUILD

@@ -33,6 +33,7 @@ extern "C" {
 #define MPI_INT 1
 #define MPI_FLOAT 2
 #define MPI_DOUBLE 3
+#define MPI_5DOUBLE 103   /* SPARTA_AD: forward dual, 5 doubles */
 #define MPI_CHAR 4
 #define MPI_BYTE 5
 #define MPI_LONG 6
