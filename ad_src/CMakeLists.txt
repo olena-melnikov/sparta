@@ -68,6 +68,26 @@ endif()
 
 option(DRAG_ENABLE_AD "Also build drag_run_ad / test_ad_geom against a -DSPARTA_AD build of SPARTA" OFF)
 
+# ---- IPOPT discovery (for drag_opt_fd / drag_opt_ad) ------------------
+# IPOPT is optional: if not found, the stock/AD targets above still build
+# and only the two new optimizer targets are skipped. Install with
+# `brew install ipopt` (headers -> /opt/homebrew/include/coin-or,
+# lib -> /opt/homebrew/lib/libipopt.dylib). No pkg-config needed.
+find_path(IPOPT_INCLUDE_DIR NAMES IpTNLP.hpp
+  PATHS /opt/homebrew/include/coin-or /usr/local/include/coin-or
+        /opt/homebrew/include /usr/local/include)
+find_library(IPOPT_LIB NAMES ipopt
+  PATHS /opt/homebrew/lib /usr/local/lib)
+if(IPOPT_INCLUDE_DIR AND IPOPT_LIB)
+  set(HAVE_IPOPT ON)
+  message(STATUS "IPOPT found: ${IPOPT_LIB} (include ${IPOPT_INCLUDE_DIR})")
+else()
+  set(HAVE_IPOPT OFF)
+  message(WARNING
+    "IPOPT not found -- skipping drag_opt_fd / drag_opt_ad.\n"
+    "Install it with `brew install ipopt`, then re-run cmake.")
+endif()
+
 set(SPARTA_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/..)
 set(SPARTA_SRC_DIR ${SPARTA_ROOT}/src)
 find_program(MAKE_EXECUTABLE NAMES make gmake REQUIRED)
@@ -113,6 +133,19 @@ target_link_libraries(opt_run PRIVATE sparta_serial mpi_stubs)
 # bezier_gen: standalone geometry generator, no SPARTA dependency.
 add_executable(bezier_gen bezier_gen.cpp bezier_geom.cpp)
 
+# drag_opt_fd: IPOPT-driven drag minimizer using the stock (finite-
+# difference / grad_fd) gradient. Same objective sources as opt_run,
+# plus the IPOPT TNLP wrapper and driver.
+if(HAVE_IPOPT)
+  add_executable(drag_opt_fd
+    opt_ipopt.cpp drag_tnlp.cpp svg_shape.cpp
+    drag_objective.cpp bezier_geom.cpp)
+  target_compile_definitions(drag_opt_fd PRIVATE SPARTA_UNORDERED_MAP)
+  target_include_directories(drag_opt_fd PRIVATE
+    ${SPARTA_SRC_DIR} ${SPARTA_SRC_DIR}/STUBS ${IPOPT_INCLUDE_DIR})
+  target_link_libraries(drag_opt_fd PRIVATE sparta_serial mpi_stubs ${IPOPT_LIB})
+endif()
+
 # ---- AD SPARTA library: `make mode=lib serial_ad` (-DSPARTA_AD) -------
 
 if(DRAG_ENABLE_AD)
@@ -140,4 +173,18 @@ if(DRAG_ENABLE_AD)
   target_compile_definitions(test_ad_geom PRIVATE SPARTA_AD SPARTA_UNORDERED_MAP)
   target_include_directories(test_ad_geom PRIVATE ${SPARTA_SRC_DIR} ${SPARTA_SRC_DIR}/STUBS)
   target_link_libraries(test_ad_geom PRIVATE sparta_serial_ad mpi_stubs)
+
+  # drag_opt_ad: same optimizer sources as drag_opt_fd, compiled with
+  # -DSPARTA_AD and linked against the AD SPARTA library, so the TNLP uses
+  # the forward-mode AD gradient (one SPARTA run per gradient) instead of
+  # finite differences.
+  if(HAVE_IPOPT)
+    add_executable(drag_opt_ad
+      opt_ipopt.cpp drag_tnlp.cpp svg_shape.cpp
+      drag_objective.cpp bezier_geom.cpp)
+    target_compile_definitions(drag_opt_ad PRIVATE SPARTA_AD SPARTA_UNORDERED_MAP)
+    target_include_directories(drag_opt_ad PRIVATE
+      ${SPARTA_SRC_DIR} ${SPARTA_SRC_DIR}/STUBS ${IPOPT_INCLUDE_DIR})
+    target_link_libraries(drag_opt_ad PRIVATE sparta_serial_ad mpi_stubs ${IPOPT_LIB})
+  endif()
 endif()
